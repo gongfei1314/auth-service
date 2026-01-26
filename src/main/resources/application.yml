@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: auth-service
+
+  # 数据源配置
+  datasource:
+    url: jdbc:mysql://localhost:3306/auth_db?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+
+  # JPA 配置
+  jpa:
+    hibernate:
+      ddl-auto: update # 自动创建或更新表结构
+    show-sql: true # 显示 SQL 语句
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true # 格式化 SQL
+    open-in-view: false
+
+server:
+  port: 8081
+
+# 日志配置
+logging:
+  level:
+    com.lerong.authservice: DEBUG
+    org.springframework.security: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
