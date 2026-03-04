@@ -12,10 +12,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
@@ -145,6 +149,17 @@ public class AuthorizationServerConfig {
     }
 
     /**
+     * 配置 AuthenticationManager Bean
+     * 用于在控制器中进行身份认证
+     */
+    @Bean
+    public AuthenticationManager authenticationManager() {
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+        authenticationProvider.setUserDetailsService(customUserDetailsService);
+        return new ProviderManager(authenticationProvider);
+    }
+
+    /**
      * 配置常规安全过滤器链
      */
     @Bean
@@ -154,7 +169,8 @@ public class AuthorizationServerConfig {
         http
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/", "/index", "/public", "/health", "/test/**", "/h2-console/**",
-                                "/login.html", "/login", "/css/**", "/js/**").permitAll() // 公开端点
+                                "/login.html", "/login", "/css/**", "/js/**",
+                                "/auth/**").permitAll() // 所有auth接口公开，内部自己验证
                         .anyRequest().authenticated()
                 )
                 .userDetailsService(customUserDetailsService) // 使用自定义 UserDetailsService

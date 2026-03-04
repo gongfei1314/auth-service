@@ -7,7 +7,11 @@
       "Read(//d//**)",
       "Read(//d/一体化企业管理方案系统建设/**)",
       "Read(//d/workspace/ideaWorkspace/gateway-service/**)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(tasklist:*)",
+      "Bash(findstr:*)",
+      "Bash(netstat:*)",
+      "Bash(taskkill:*)"
     ],
     "deny": [],
     "ask": []
