@@ -145,6 +145,9 @@ public class AuthorizationServerConfig {
                 .oauth2ResourceServer((resourceServer) -> resourceServer
                         .jwt(Customizer.withDefaults()));
 
+        // 禁用 CSRF，允许 API 调用
+        http.csrf(csrf -> csrf.disable());
+
         return http.build();
     }
 
@@ -169,19 +172,14 @@ public class AuthorizationServerConfig {
         http
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/", "/index", "/public", "/health", "/test/**", "/h2-console/**",
-                                "/login.html", "/login", "/css/**", "/js/**",
-                                "/auth/**").permitAll() // 所有auth接口公开，内部自己验证
+                                "/login.html", "/css/**", "/js/**",
+                                "/auth/**", "/actuator/**").permitAll() // 所有auth接口公开，内部自己验证
                         .anyRequest().authenticated()
                 )
                 .userDetailsService(customUserDetailsService) // 使用自定义 UserDetailsService
                 .csrf(csrf -> csrf.disable()) // 禁用 CSRF，方便测试
-                .formLogin(form -> form
-                        .loginPage("/login.html") // 自定义登录页面路径
-                        .loginProcessingUrl("/perform_login") // 登录处理 URL，避免与默认的 /login 冲突
-                        .defaultSuccessUrl("/user/info", true) // 登录成功后跳转
-                        .failureUrl("/login.html?error=true") // 登录失败跳转
-                        .permitAll()
-                )
+                // 完全禁用表单登录，避免与API登录接口冲突
+                .formLogin(form -> form.disable())
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login.html")

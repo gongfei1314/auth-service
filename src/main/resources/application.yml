@@ -2,6 +2,19 @@ spring:
   application:
     name: auth-service
 
+  # Nacos 服务发现配置
+  cloud:
+    compatibility-verifier:
+      enabled: false  # 禁用 Spring Cloud 兼容性检查
+    nacos:
+      discovery:
+        server-addr: localhost:8848  # Nacos Server 地址
+        namespace: public  # 命名空间
+        group: DEFAULT_GROUP  # 分组
+        service-name: ${spring.application.name}  # 服务名
+        register-enabled: true  # 启用注册
+        discovery-enabled: true  # 启用发现
+
   # 数据源配置
   datasource:
     url: jdbc:mysql://localhost:3306/auth_db?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
